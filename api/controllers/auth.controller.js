@@ -1,14 +1,12 @@
 import User from "../models/Usermodel.js"
 import bcryptjs from "bcryptjs"
-const authController = async(req,res)=>{
+import { errorHandler } from "../utils/error.js"
+const authController = async(req,res,next)=>{
         const {username,email,password} = req.body
 
 
         if(!username || !email || !password || username==="" || email==="" || password === ""){
-            return res.json({
-                success:false,
-                message:"Please fill all the fields"
-             })
+           next(errorHandler(400,"All the fields are required"))
         }
         const hashedPassword = bcryptjs.hashSync(password,10)
 
