@@ -1,12 +1,13 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import React, { useState } from 'react'
 import { Link,useNavigate } from 'react-router-dom'
-
+import { useDispatch,useSelector } from 'react-redux'
+import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice.js'
 const Signin = () => {
   const [formData,setFormData] = useState({})
-  const [errorMessage,setErrorMessage] =useState(null)
-  const [isLoading,setIsLoading] = useState(false)
+  const {loading,error:errorMessage} = useSelector(state=>state.user)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const handleChange = (e)=>{
         setFormData({...formData,[e.target.id]:e.target.value.trim()})
   }
@@ -14,10 +15,10 @@ const Signin = () => {
   const handleSubmit = async(e)=>{
     e.preventDefault()
     if(!formData.email || !formData.password){
-       return setErrorMessage("Please filled the All the fileds")
+       dispatch(signInFailure("Please Filled the all feilds"))
     }
     try {
-      setIsLoading(true)
+      dispatch(signInStart())
           const resp = await fetch("/api/auth/signin",
             {
               method: "POST",
@@ -27,15 +28,15 @@ const Signin = () => {
           )
           const data = await resp.json()
           if(data.succes === false){
-          return  setErrorMessage(data.message)
+         dispatch(signInFailure(data.message))
           }
-          setIsLoading(false)
+        
           if(resp.ok){
+            dispatch(signInSuccess(data))
             navigate("/")
           }
     } catch (error) {
-      setErrorMessage(error.message)
-      setIsLoading(false)
+        dispatch(signInFailure(error.message))
     }
   }
   
@@ -61,9 +62,9 @@ const Signin = () => {
                 <Label value='Your password'/>
                 <TextInput type='password'  id='password' placeholder='Your password'onChange={handleChange} />
               </div>
-              <Button gradientDuoTone='purpleToPink' type='submit' disabled={isLoading}>
+              <Button gradientDuoTone='purpleToPink' type='submit' disabled={loading}>
                 {
-                  isLoading ? (
+                  loading ? (
                     <>
                       <Spinner size='sm'/>
                       <span>Loading...</span>
