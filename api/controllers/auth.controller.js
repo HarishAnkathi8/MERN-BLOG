@@ -58,9 +58,10 @@ export const signin = async(req,res,next)=>{
 
 export const google = async(req,res,next)=>{
 
-            const {name,email,googlephotourl} = req.body
+            const {name,email,googlePhotoUrl} = req.body
 
-            const user = await User.findOne({email})
+            try {
+                const user = await User.findOne({email})
             if(user){
                 const token = jwt.sign({id:user._id},process.env.JWT_SECRET);
                 const {password:pass, ...rest} = user._doc
@@ -72,7 +73,7 @@ export const google = async(req,res,next)=>{
                 const Newuser = new User({
                     username:name.toLowerCase().split(" ").join("")+Math.random().toString(9).slice(-4),
                     email,
-                    profilePicture:googlephotourl,
+                    profilePicture:googlePhotoUrl,
                     password:hashedPassword
                 })
                  await Newuser.save()
@@ -82,5 +83,12 @@ export const google = async(req,res,next)=>{
                  
             }
 
+            } catch (error) {
+                res.json({
+                    status:400,
+                    message:error.message
+                    
+                })
+            }
 
 }

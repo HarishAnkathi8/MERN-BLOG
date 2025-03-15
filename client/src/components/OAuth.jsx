@@ -20,14 +20,14 @@ const OAuth = () => {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
-                  "Accept": "application/json",
                   },
                   body: JSON.stringify({
                     name:resultfromGoogle.user.displayName,
                     email:resultfromGoogle.user.email,
-                    googlephotoUrl:resultfromGoogle.user.photoURL
+                    googlePhotoUrl:resultfromGoogle.user.photoURL
                   }),
                })
+               console.log(resultfromGoogle)
                const data = await resp.json()
                if(resp.ok){
                 dispatch(signInSuccess(data))
