@@ -6,10 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from 'react-router-dom';
 import { toggleTheme } from "../redux/theme/themeSlice.js";
 const Header = () => {
-    const path = useLocation().pathname 
+    const path = useLocation().pathname
     const dispatch = useDispatch()
     const { currentUser } = useSelector(state => state.user)
-    const {theme} = useSelector(state => state.theme)
+    const { theme } = useSelector(state => state.theme)
     return (
         <Navbar className='border-b-2'>
             <Link className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
@@ -26,7 +26,7 @@ const Header = () => {
             </Button>
             <div className='flex  md:order-2'>
                 <Button className=' h-10 w-12 outline' color='gray' pill onClick={() => dispatch(toggleTheme())}>
-              {  theme ==="light" ? <FaMoon/> :   <FaSun />}
+                    {theme === "light" ? <FaMoon /> : <FaSun />}
                 </Button>
                 {currentUser ? (
                     <Dropdown arrowIcon={false} inline label={<Avatar alt="User" img={currentUser.profilePicture} rounded />}>
